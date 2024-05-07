@@ -1,0 +1,78 @@
+﻿@model hm_4_2.ViewModels.OrderViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Order.Number" class="control-label"></label>
+                <input asp-for="Order.Number" class="form-control" />
+                <span asp-validation-for="Order.Number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.State" class="control-label"></label>
+                <select asp-for="Order.State" class="form-control" asp-items="@ViewData["StateList"] as SelectList">
+                </select>
+                <span asp-validation-for="Order.State" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.OrderDate" class="control-label"></label>
+                <input asp-for="Order.OrderDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.CustomerId" class="control-label"></label>
+                <select asp-for="Order.CustomerId" class="form-control" asp-items="@ViewData["CustomerId"] as SelectList">
+                    <option value="">-- Select Customer --</option>
+                </select>
+                <span asp-validation-for="Order.CustomerId" class="text-danger"></span>
+            </div>
+
+            <div id="orderDetailsList">
+                @for (int i = 0; i < Model.OrderDetails.Count; i++)
+                {
+                    <div>
+                        <label asp-for="@Model.OrderDetails[i].ProductName" class="control-label"></label>
+                        <input asp-for="@Model.OrderDetails[i].ProductName" class="form-control" />
+
+                        <label asp-for="@Model.OrderDetails[i].Amount" class="control-label"></label>
+                        <input asp-for="@Model.OrderDetails[i].Amount" type="number" class="form-control" />
+                       
+                    </div>
+                }
+            </div>
+
+            <button type="button" onclick="addOrderDetail()">Add Product</button>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script>
+        function addOrderDetail() {
+            var index = $('#orderDetailsList').children('div').length;
+            var detailHtml = '<div>' +
+                '<label for="OrderDetails_' + index + '__ProductName" class="control-label">Product Name</label>' +
+                '<input type="text" id="OrderDetails_' + index + '__ProductName" name="OrderDetails[' + index + '].ProductName" class="form-control" />' +
+                '<label for="OrderDetails_' + index + '__Amount" class="control-label">Amount</label>' +
+                '<input type="number" id="OrderDetails_' + index + '__Amount" name="OrderDetails[' + index + '].Amount" class="form-control" />' +
+                '</div>';
+            $('#orderDetailsList').append(detailHtml);
+        }
+    </script>
+}
